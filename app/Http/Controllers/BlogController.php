@@ -21,34 +21,36 @@ class BlogController extends Controller
      */
     public function index(Request $request)
     {
-        // return $request;
-        // $blogs = Blog::all();
-        // return Inertia::render('Blogs/Index',['blogs' => $blogs]);
-        $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
-            $query->where(function ($query) use ($value) {
-                Collection::wrap($value)->each(function ($value) use ($query) {
-                    $query
-                        ->orWhere('title', 'LIKE', "%{$value}%")
-                        ->orWhere('slug', 'LIKE', "%{$value}%");
-                });
-            });
-        });
-
-        $blogs = QueryBuilder::for(Blog::class)
-        ->defaultSort('created_at')
-        ->allowedSorts(['title', 'slug', 'created_at', 'id'])
-        ->allowedFilters(['title', 'slug', $globalSearch])
-        ->paginate($request->perPage)
-        ->withQueryString();
         
-        return Inertia::render('Blogs/Index', ['blogs' => $blogs])->table(function (InertiaTable $table) {
-            $table->withGlobalSearch();
-            $table->column('id', 'ID', searchable: true, sortable: true);
-            $table->column('title', 'Title', searchable: true, sortable: true);
-            $table->column('slug', 'Slug', searchable: true, sortable: true);
-            $table->column('created_at', 'Created Date', searchable: true, sortable: true);
-            $table->column('actions', 'Actions');
-        });
+        $blogs = Blog::paginate(5);
+        // return $blogs;
+        return Inertia::render('Blogs/Index',['blogs' => $blogs]);
+
+        // $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
+        //     $query->where(function ($query) use ($value) {
+        //         Collection::wrap($value)->each(function ($value) use ($query) {
+        //             $query
+        //                 ->orWhere('title', 'LIKE', "%{$value}%")
+        //                 ->orWhere('slug', 'LIKE', "%{$value}%");
+        //         });
+        //     });
+        // });
+
+        // $blogs = QueryBuilder::for(Blog::class)
+        // ->defaultSort('created_at')
+        // ->allowedSorts(['title', 'slug', 'created_at', 'id'])
+        // ->allowedFilters(['title', 'slug', $globalSearch])
+        // ->paginate($request->perPage)
+        // ->withQueryString();
+        
+        // return Inertia::render('Blogs/Index', ['blogs' => $blogs])->table(function (InertiaTable $table) {
+        //     $table->withGlobalSearch();
+        //     $table->column('id', 'ID', searchable: true, sortable: true);
+        //     $table->column('title', 'Title', searchable: true, sortable: true);
+        //     $table->column('slug', 'Slug', searchable: true, sortable: true);
+        //     $table->column('created_at', 'Created Date', searchable: true, sortable: true);
+        //     $table->column('actions', 'Actions');
+        // });
     }
 
     /**

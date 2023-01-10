@@ -2,23 +2,22 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/inertia-vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { Table } from "@protonemedia/inertiajs-tables-laravel-query-builder";
-import moment from 'moment';
-
-    const props = defineProps({
-        blogs: {
-            type: Object,
-            default: () => ({})
-        }
-    })
-
-    const form = useForm()
-
-    function destroy(id) {
-        if (confirm("Are you sure want to delete")) {
-            form.delete(route('blogs.destroy', id))
-        }
+// import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/vue/24/outline";
+import Pagination from '@/Components/Pagination.vue'
+const props = defineProps({
+    blogs: {
+        type: Object,
+        default: () => ({})
     }
+})
+
+const form = useForm()
+
+function destroy(id) {
+    if (confirm("Are you sure want to delete")) {
+        form.delete(route('blogs.destroy', id))
+    }
+}
 </script>
 <template>
     <Head title="Blog"/>
@@ -46,35 +45,86 @@ import moment from 'moment';
                             >
                         </div>
                          <div
-                            class="rounded-lg border"
+                            class="relative overflow-x-auto shadow-md sm:rounded-lg"
                         >
-                            <Table 
-                            :striped="true" 
-                            :resource="blogs"
-                            class="mt-4">
-                                <template v-slot:tableGlobalSearch="slotProps">
-                                    <input
-                                        class="border rounded-lg px-1 w-full text-sm"
-                                        placeholder="Search"
-                                        @input="slotProps.onChange($event.target.value)"
-                                    />
-                                </template>
-                                <template #cell(actions)="{ item: blog }">
-                                    <Link
-                                        :href="
-                                            route(
-                                                'blogs.edit',
-                                                blog.id
-                                            )
-                                        "
-                                        class="px-4 py-2 text-white bg-blue-600 rounded-lg mr-1" >Edit</Link
+                            <table
+                                class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+                            >
+                                <thead
+                                    class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+                                >
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3">#</th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Title
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Slug
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Content
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Edit
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Delete
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        v-for="blog in blogs.data"
+                                        :key="blog.id"
+                                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                                     >
-                                </template>
-                                <template #cell(created_at)="{item: created_at}">
-                                    <p>{{ moment(created_at).format('DD-MM-YYYY') }}</p>
-                                </template>
-                            </Table>
+                                        <th
+                                            scope="row"
+                                            class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap"
+                                        >
+                                            {{ blog.id }}
+                                        </th>
+                                        <th
+                                            scope="row"
+                                            class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap"
+                                        >
+                                            {{ blog.title }}
+                                        </th>
+                                        <th class="px-6 py-4">
+                                            {{ blog.slug }}
+                                        </th>
+                                        <th
+                                            scope="row"
+                                            class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-normal"
+                                        >
+                                            {{ blog.content }}
+                                        </th>
+
+
+                                        <td class="px-6 py-4">
+                                            <Link
+                                                :href="
+                                                    route(
+                                                        'blogs.edit',
+                                                        blog.id
+                                                    )
+                                                "
+                                               class="px-4 py-2 text-white bg-blue-600 rounded-lg" >Edit</Link
+                                            >
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <PrimaryButton
+                                                class="bg-red-700"
+                                                @click="destroy(blog.id)"
+                                            >
+                                                Delete
+                                            </PrimaryButton>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
+                        <Pagination class="mt-4" :links="blogs.links" />
                     </div>
                 </div>
             </div>

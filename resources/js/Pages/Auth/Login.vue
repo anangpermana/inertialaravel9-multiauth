@@ -34,9 +34,9 @@ const submit = () => {
         </div>
 
         <form @submit.prevent="submit">
-            <div class="px-10 py-12">
-                <h1 class="text-center text-3xl font-bold">Welcome Back</h1>
-                <div class="mt-6 mx-auto w-24 border-b-2" />
+            <div class="px-10 py-8">
+                <h1 class="text-center text-2xl font-bold">Welcome Back</h1>
+                <div class="mt-3 mx-auto w-24 border-b-2" />
             </div>
             <div>
                 <InputLabel for="email" value="Email" />
